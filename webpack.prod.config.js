@@ -5,8 +5,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const TSLintPlugin = require('tslint-webpack-plugin')
 
 const clientConfig = {
-	mode: 'development',
+	mode: 'production',
 	entry: './src/client/index.ts',
+	output: {
+		path: path.resolve(__dirname, './dist'),
+		publicPath: './',
+		filename: 'build.js'
+	},
 	module: {
 		rules: [
 			{
@@ -53,19 +58,11 @@ const clientConfig = {
 			'vue$': 'vue/dist/vue.esm.js'
 		}
 	},
-	devServer: {
-		historyApiFallback: true,
-		hot: true,
-		watchOptions: {
-		  poll: true
-		}
-	},
 	performance: {
 		hints: false
 	},
-	devtool: '#eval-source-map',
+	devtool: '#source-map',
 	plugins: [
-		new webpack.HotModuleReplacementPlugin(),
 		// make sure to include the plugin for the magic
 		new VueLoaderPlugin(),
 		//HtmlWebpackPlugin will generate the index.html file
@@ -74,8 +71,38 @@ const clientConfig = {
 			template: 'src/client/index.ejs',
 			title: 'Node Vue App',
 			libraryTarget: 'window'
+		}),
+		new webpack.optimize.UglifyJsPlugin({
+			sourceMap: true,
+			compress: {
+				warnings: false
+			}
+		}),
+		new webpack.LoaderOptionsPlugin({
+			minimize: true
 		})
 	]
 }
 
 module.exports=[clientConfig]
+
+if (process.env.NODE_ENV === 'production') {
+	module.exports.devtool = '#source-map'
+	// http://vue-loader.vuejs.org/en/workflow/production.html
+	module.exports.plugins = (module.exports.plugins || []).concat([
+		new webpack.DefinePlugin({
+			'process.env': {
+				NODE_ENV: '"production"'
+			}
+		}),
+		new webpack.optimize.UglifyJsPlugin({
+			sourceMap: true,
+			compress: {
+				warnings: false
+			}
+		}),
+		new webpack.LoaderOptionsPlugin({
+			minimize: true
+		})
+	])
+}

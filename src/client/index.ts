@@ -1,9 +1,11 @@
-import Vue from "vue"
+import Vue from 'vue'
+import store from './store/index'
 
-let v = new Vue({
-	el: "#app",
+const v = new Vue({
+	el: '#app',
+	store,
 	template: `<label>{{name}}</label>`,
 	data: {
-		name: "World"
+		name: 'World'
 	}
 })
