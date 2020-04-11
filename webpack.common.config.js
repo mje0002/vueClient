@@ -23,14 +23,6 @@ const commonConfig = {
 				}
 			},
 			{
-				test: /\.ts(x?)$/,
-				loader: 'ts-loader',
-				exclude: /node_modules/,
-				options: {
-					appendTsSuffixTo: [/\.vue$/],
-				}
-			},
-			{
 				test: /\.(png|jpg|gif|svg)$/,
 				loader: 'file-loader',
 				options: {
@@ -38,11 +30,29 @@ const commonConfig = {
 				}
 			},
 			{
+				test: /\.scss$/,
+				use: [{
+				  loader: "style-loader"
+				}, {
+				  loader: "css-loader"
+				}, {
+				  loader: "sass-loader"
+				}]
+			},
+			{
 				test: /\.css$/,
 				use: [
 					'vue-style-loader',
 					'css-loader'
 				]
+			},
+			{
+				test: /\.ts(x?)$/,
+				loader: 'ts-loader',
+				exclude: /node_modules/,
+				options: {
+					appendTsSuffixTo: [/\.vue$/],
+				}
 			}
 		]
 	},
