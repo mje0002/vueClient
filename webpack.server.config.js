@@ -29,7 +29,7 @@ module.exports = {
 	},
 	plugins: [
 		new TSLintPlugin({
-            files: ['./src/**/*.ts']
+            files: ['./src/server/**/*.ts']
 		})
 	],
 	resolve: {

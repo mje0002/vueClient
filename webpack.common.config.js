@@ -23,7 +23,7 @@ const commonConfig = {
 				}
 			},
 			{
-				test: /\.tsx?$/,
+				test: /\.ts(x?)$/,
 				loader: 'ts-loader',
 				exclude: /node_modules/,
 				options: {
@@ -56,6 +56,9 @@ const commonConfig = {
 		hints: false
 	},
 	plugins: [
+		new TSLintPlugin({
+            files: ['./src/client/**/*.ts']
+		}),
 		// make sure to include the plugin for the magic
 		new VueLoaderPlugin(),
 		//HtmlWebpackPlugin will generate the index.html file
