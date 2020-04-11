@@ -1,4 +1,7 @@
-const serverConfig = {
+const TSLintPlugin = require('tslint-webpack-plugin')
+var path = require('path')
+
+module.exports = {
 	cache: true,
 	context: __dirname,
 	mode: 'development',
