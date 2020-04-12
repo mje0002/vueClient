@@ -1,26 +1,47 @@
 
 <template>
     <div class="app">
-        <div class="app-header">
-            <img src="/public/logo-vue.png" class="app-logo" alt="logo" />
-            <h2>Welcome to Vue</h2>
-        </div>
-        <p class="app-intro">
-            To get started, edit
-            <code>src/components/app/app.vue</code> and save to reload.
-        </p>
+		<sui-menu 
+			:inverted="true"
+			:visible="isVisible"
+			fixed
+		>
+		    <sui-menu-item>
+				<sui-image :src="`/public/logo-vue.png`" spaced="right" size="mini" />
+				<strong>
+					Vue Welcome
+					<small>
+					<em>1.0.0</em>
+					</small>
+				</strong>
+			</sui-menu-item>
+			<router-link is="sui-menu-item" to="/"> Intro</router-link>
+			<router-link is="sui-menu-item" to="/ReadMe"> ReadMe</router-link>
+
+		</sui-menu>
+		<sui-container class="app-container" fluid>
+			<router-view></router-view>
+		</sui-container>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
+@Component
 export default class App extends Vue {
+	isVisible = true
 }
 </script>
 
 <style scoped lang="scss">
-.app {
+.app-container{
+  min-width: 550px;
+  height: calc(100vh - 70px);
+  margin-top: 70px;
+  overflow-x: auto;
+}
+.center {
     text-align: center;
 }
 .app-logo {
@@ -28,11 +49,13 @@ export default class App extends Vue {
 }
 .app-header {
     background-color: #222;
-    height: 150px;
     padding: 20px;
     color: white;
 }
 .app-intro {
     font-size: large;
+}
+.app{
+	overflow: hidden;
 }
 </style>
