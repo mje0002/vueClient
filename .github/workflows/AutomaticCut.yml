@@ -25,6 +25,7 @@ jobs:
           fetch-depth: 0
           token: ${{ github.token }}
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-      - run: git diff origin/staging
+      - run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      - run: git cherry -v origin/staging
       
       
