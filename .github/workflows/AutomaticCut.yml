@@ -19,11 +19,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out repository code
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
         with: 
+          ref: master
           fetch-depth: 0
           token: ${{ github.token }}
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-      - run: git diff staging
+      - run: git diff origin/staging
       
       
