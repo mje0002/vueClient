@@ -62,7 +62,7 @@ jobs:
           diffresult="${description//$'\n'/'%0A'}"
           diffresult="${description//$'\r'/'%0D'}"
           echo $diffresults
-          echo "::set-output name=diffresults::$diffresults"
+          echo "::set-output name=result::$diffresults"
         id: extract_diff
         
       - name: Echo Diffs
