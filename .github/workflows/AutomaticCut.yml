@@ -56,10 +56,17 @@ jobs:
         
       - name: Check staging -> release difference
         shell: bash
-        run: echo "##[set-output name=result;]$(git cherry -v origin/release)"
+        run: |
+          diffresult=$(git cherry -v origin/release 2>&1)
+          diffresult="${description//'%'/'%25'}"
+          diffresult="${description//$'\n'/'%0A'}"
+          diffresult="${description//$'\r'/'%0D'}"
+          echo $diffresults
+          echo "::set-output name=diffresults::$diffresults"
         id: extract_diff
         
-      - run: echo "${{steps.extract_diff.outputs.result}}"
+      - name: Echo Diffs
+        run: echo "${{steps.extract_diff.outputs.result}}"
         
       #- name: Create Pull Request
       #  uses: peter-evans/create-pull-request@v3
