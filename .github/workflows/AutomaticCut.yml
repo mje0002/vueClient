@@ -52,16 +52,15 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - run: echo "The ${{ github.repository }} / ${{github.ref}} repository has been cloned to the runner."
+      - run: git cherry -v origin/release
         
       - name: Check staging -> release difference
         shell: bash
         run: |
-          vardiff=$(git cherry -v origin/release 2>&1)
-          ##[set-output name=result;]$(echo "$vardiff")
+          echo "DIFFRESULT=$(git cherry -v origin/release)" >> $GITHUB_ENV
         id: extract_diff
         
-      - run: echo "The branch ${{steps.extract_diff.outputs.result}}"
+      - run: echo "${{env.DIFFRESULT}}"
         
       #- name: Create Pull Request
       #  uses: peter-evans/create-pull-request@v3
