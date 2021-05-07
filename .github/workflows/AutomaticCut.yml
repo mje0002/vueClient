@@ -19,16 +19,24 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out repository code
-        uses: actions/checkout@master
-      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-
-      # Runs a single command using the runners shell
-      - name: Merge master -> staging
-        uses: devmasx/merge-branch@v1.3.1
+        uses: actions/checkout@v2
+        with: 
+          ref: master
+          fetch-depth: 0
+          token: ${{ github.token }}
+      - run: echo "The ${{ github.repository }} / ${{github.ref}} repository has been cloned to the runner."
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - run: echo "The branch ${{steps.extract_branch.outputs.branch}}"
+      - run: git cherry -v origin/staging
+      - name: Merge to staging
+        uses: everlytic/branch-merge@1.1.0
         with:
-          type: now
-          target_branch: staging
-          github_token: ${{ github.token }}
-          
-      - run: echo "github event before ${{github.event.before}}"
-      - run: echo "github event after ${{github.event.after}}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_ref: ${{ github.ref }} ## Current Checked out Branch Master
+          target_branch: 'staging' ## Branch we wish to merge into staging
+          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
+      
+      
