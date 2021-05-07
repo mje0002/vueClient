@@ -21,22 +21,36 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         with: 
-          ref: master
+          ref: master ## Need to change this to your base branch
           fetch-depth: 0
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - run: echo "The ${{ github.repository }} / ${{github.ref}} repository has been cloned to the runner."
+      
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
+        
       - run: echo "The branch ${{steps.extract_branch.outputs.branch}}"
-      - run: git cherry -v origin/staging
-      - name: Merge to staging
+      
+      - name: Merge master to staging
         uses: everlytic/branch-merge@1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_ref: ${{ github.ref }} ## Current Checked out Branch Master
           target_branch: 'staging' ## Branch we wish to merge into staging
-          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
-      
+          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}' 
+      - name: Merge has Failed
+        if: ${{ failure() }}
+        run: echo "Send message to Slack about merge failure - needs manual intervention"
+        
+      - name: Check staging -> release difference
+        shell: bash
+        run: "##[set-output name=result;]$(git cherry -v origin/release)"
+        id: extract_diff
+        
+      - run: echo "The branch ${{steps.extract_diff.outputs.result}}"
+        
+
       
