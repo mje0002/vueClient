@@ -57,10 +57,10 @@ jobs:
       - name: Check staging -> release difference
         shell: bash
         run: |
-          diffresult=$(git cherry -v origin/release 2>&1)
-          diffresult="${description//'%'/'%25'}"
-          diffresult="${description//$'\n'/'%0A'}"
-          diffresult="${description//$'\r'/'%0D'}"
+          diffresult=$(git cherry -v origin/release)
+          diffresult="${diffresult//'%'/'%25'}"
+          diffresult="${diffresult//$'\n'/'%0A'}"
+          diffresult="${diffresult//$'\r'/'%0D'}"
           echo $diffresults
           echo "::set-output name=result::$diffresults"
         id: extract_diff
