@@ -31,6 +31,12 @@ jobs:
         id: extract_branch
       - run: echo "The branch ${{steps.extract_branch.outputs.branch}}"
       - run: git cherry -v origin/staging
-
+      - name: Merge to staging
+        uses: everlytic/branch-merge@1.1.0
+        with:
+          github_token: ${{ GITHUB_TOKEN }}
+          source_ref: ${{ github.ref }} ## Current Checked out Branch Master
+          target_branch: 'staging' ## Branch we wish to merge into staging
+          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
       
       
