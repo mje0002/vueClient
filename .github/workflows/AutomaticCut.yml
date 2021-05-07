@@ -34,7 +34,7 @@ jobs:
       - name: Merge to staging
         uses: everlytic/branch-merge@1.1.0
         with:
-          github_token: ${{ GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           source_ref: ${{ github.ref }} ## Current Checked out Branch Master
           target_branch: 'staging' ## Branch we wish to merge into staging
           commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
