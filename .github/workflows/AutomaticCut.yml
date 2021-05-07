@@ -56,7 +56,7 @@ jobs:
         
       - name: Check staging -> release difference
         run: |
-          echo "DIFFRESULT=$(git cherry -v origin/release)" >> $GITHUB_ENV
+          echo "DIFFRESULT='$(git cherry -v origin/release)'" >> $GITHUB_ENV
         id: extract_diff
         
       - run: echo "${{env.DIFFRESULT}}"
