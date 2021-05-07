@@ -56,7 +56,7 @@ jobs:
         
       - name: Check staging -> release difference
         shell: bash
-        run: echo "##[set-output name=result;]$(echo '$(git cherry -v origin/release)'"
+        run: echo "##[set-output name=result;]$(echo '$(git cherry -v origin/release)')"
         id: extract_diff
         
       - run: echo "${{steps.extract_diff.outputs.result}}"
