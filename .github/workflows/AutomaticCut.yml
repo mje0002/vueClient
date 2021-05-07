@@ -55,11 +55,11 @@ jobs:
       - run: git cherry -v origin/release
         
       - name: Check staging -> release difference
-        run: |
-          echo "DIFFRESULT='$(git cherry -v origin/release)'" >> $GITHUB_ENV
+        shell: bash
+        run: echo "##[set-output name=result;]$(echo '$(git cherry -v origin/release)'"
         id: extract_diff
         
-      - run: echo "${{env.DIFFRESULT}}"
+      - run: echo "${{steps.extract_diff.outputs.result}}"
         
       #- name: Create Pull Request
       #  uses: peter-evans/create-pull-request@v3
