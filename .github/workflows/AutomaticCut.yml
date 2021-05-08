@@ -56,7 +56,7 @@ jobs:
         
       - name: Check staging -> release difference
         shell: bash
-        run: echo "pr=$(git cherry -v origin/release | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')" >> $GITHUB_ENV
+        run: echo "##[set-output name=result;]$(git cherry -v origin/release | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')"
         
         id: extract_diff
         
