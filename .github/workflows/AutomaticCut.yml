@@ -61,8 +61,7 @@ jobs:
           diffresult="${diffresult//'%'/'%25'}"
           diffresult="${diffresult//$'\n'/'%0A'}"
           diffresult="${diffresult//$'\r'/'%0D'}"
-          echo $diffresults
-          echo "::set-output name=result::$diffresults"
+          echo "##[set-output name=result;]$(echo $diffresults)"
         id: extract_diff
         
       - name: Echo Diffs
