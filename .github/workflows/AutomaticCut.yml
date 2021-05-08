@@ -56,12 +56,15 @@ jobs:
         
       - name: Check staging -> release difference
         shell: bash
-        run: echo "##[set-output name=result;]$(git cherry -v origin/release | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')"
-        
+        run: |
+          MY_STRING=$(git cherry -v origin/release | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')
+          echo "MY_STRING<<EOF" >> $GITHUB_ENV
+          echo "$MY_STRING" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
         id: extract_diff
         
       - name: Echo Diffs
-        run: echo "${{env.pr}} result ${{steps.extract_diff.outputs.result}}"
+        run: echo "result - ${{env.MY_STRING}}"
         
       #- name: Create Pull Request
       #  uses: peter-evans/create-pull-request@v3
