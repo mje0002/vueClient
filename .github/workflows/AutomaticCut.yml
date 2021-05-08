@@ -61,11 +61,11 @@ jobs:
           diffresult="${diffresult//'%'/'%25'}"
           diffresult="${diffresult//$'\n'/'%0A'}"
           diffresult="${diffresult//$'\r'/'%0D'}"
-          echo "##[set-output name=result;]$(echo $diffresults)"
+          echo "pr=$diffresults" >> $GITHUB_ENV
         id: extract_diff
         
       - name: Echo Diffs
-        run: echo "${{steps.extract_diff.outputs.result}}"
+        run: echo "${{env.pr}} result ${{steps.extract_diff.outputs.result}}"
         
       #- name: Create Pull Request
       #  uses: peter-evans/create-pull-request@v3
