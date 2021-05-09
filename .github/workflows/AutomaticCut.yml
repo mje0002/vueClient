@@ -63,6 +63,7 @@ jobs:
         id: extract_diff
         
       - name: Create Pull Request
+        id: autopr
         uses: peter-evans/create-pull-request@v3
         with:
             token: ${{ secrets.GITHUB_TOKEN }}
@@ -74,15 +75,16 @@ jobs:
               
               ${{env.PR_DIFF}}
               
-            branch: automatic-cut
+            branch: automated-cut
             labels: automated pr
+            reviewers: mje0002
             
       - name: Failed to create Pull Request
         if: ${{ failure() }}
         run: echo "Send message to Slack about Pull Request"
       - name: Created Pull Request
         if: ${{ success() }}
-        run: echo "Send message to Slack about Pull Request"
+        run: echo "Send message to Slack about Pull Request ${{ steps.autopr.outputs.pull-request-number }} - ${{ steps.autopr.outputs.pull-request-url }}"
         
       - name: Generate Jira Ticket for Pull Request to release
         run: echo "Generating JIRA ticket for PR \n ${{env.PR_DIFF}}"
