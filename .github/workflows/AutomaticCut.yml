@@ -76,6 +76,7 @@ jobs:
               ${{env.PR_DIFF}}
               
             branch: automated-cut
+            delete-branch: true
             labels: automated pr
             reviewers: mje0002
             
@@ -90,7 +91,7 @@ jobs:
         run: echo "Generating JIRA ticket for PR \n ${{env.PR_DIFF}}"
       - name: Created Jira Ticket
         if: ${{ success() }}
-        run: echo "Send message to Slack about Pull Request"
+        run: echo "Send message to Slack about Pull Request and Jira Ticket"
       - name: Failed to create Jira Ticket
         if: ${{ failure() }}
         run: echo "Send message to Slack about Pull Request"
