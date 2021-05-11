@@ -4,9 +4,33 @@ name: CI
 
 # Controls when the action will run. 
 on:
-
+  #schedule:
+  #    - cron:  '0 4 3 * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  
+    #inputs:
+    #  default_branch:
+    #    description: 'The base branch like development'
+    #    required: true
+    #    default: 'development'
+    #  staging_branch:
+    #    description: 'The base branch like staging/uat'
+    #    required: true
+    #    default: 'staging'
+    #  release_branch:
+    #    description: 'The base branch like release/production'
+    #    required: true
+    #    default: 'release'
+    #  pull_request_reviewers:
+    #    description: 'this can a comma seperated list and/or github team'
+    #    required: true
+    #    default: 'mje0002'
+    #  pull_request_labels:
+    #    description: 'A comma seperated list of labels'
+    #    required: true
+    #    default: 'automated-pr'
+        
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -14,7 +38,12 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    env:
+      DEFAULT_BRANCH: 'master'
+      STAGING_BRANCH: 'staging'
+      RELEASE_BRANCH: 'release'
+      PULL_REQUEST_REVIEWERS: 'mje0002'
+      PULL_REQUEST_LABELS: 'automated-pr'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - run: echo "CURRENT_DATE=$(date "+%Y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
@@ -22,32 +51,32 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         with: 
-          ref: master ## Need to change this to your base branch
+          ref: ${{env.DEFAULT_BRANCH}} ## Need to change this to your base branch
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Merge master to staging
+      - name: 'Merge ${{env.DEFAULT_BRANCH}} to ${{env.STAGING_BRANCH}}'
         uses: everlytic/branch-merge@1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           source_ref: ${{ github.ref }} ## Current Checked out Branch Master
-          target_branch: 'staging' ## Branch we wish to merge into staging
+          target_branch: '${{env.STAGING_BRANCH}}' ## Branch we wish to merge into staging
           commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}' 
       - name: Merge has Failed
         if: ${{ failure() }}
         run: echo "Send message to Slack about merge failure - needs manual intervention"
         
-      - name: Checkout staging
+      - name: 'Checkout ${{env.STAGING_BRANCH}}'
         uses: actions/checkout@v2
         with: 
-          ref: staging ## Need to change this to your base branch
+          ref: ${{env.STAGING_BRANCH}} ## Need to change this to your base branch
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Build Change Log
         shell: bash
         run: |
-          CHANGE_LOG=$(git cherry -v origin/release | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')
+          CHANGE_LOG=$(git cherry -v origin/${{env.RELEASE_BRANCH}} | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')
           echo "CHANGE_LOG<<EOF" >> $GITHUB_ENV
           echo "$CHANGE_LOG" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -55,14 +84,14 @@ jobs:
         
       - uses: actions/checkout@v2
         with:
-          ref: release ## Need to change this to your base branch
+          ref: ${{env.RELEASE_BRANCH}} ## Need to change this to your base branch
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Reset main branch
+      - name: Reset main branch, so we can PR!
         run: |
-          git fetch origin staging:staging
-          git reset --hard staging
+          git fetch origin ${{env.STAGING_BRANCH}}:${{env.STAGING_BRANCH}}
+          git reset --hard ${{env.STAGING_BRANCH}}
       
       - name: Create Pull Request
         id: autopr
@@ -77,10 +106,10 @@ jobs:
               
               ${{env.CHANGE_LOG}}
               
-            branch: automated-cut
+            branch: 'automated-${{env.STAGING_BRANCH}}'
             delete-branch: true
-            labels: automated pr
-            reviewers: mje0002
+            labels: '${{env.PULL_REQUEST_LABELS}}'
+            reviewers: '${{env.PULL_REQUEST_REVIEWERS}}'
             
       - name: Failed to create Pull Request
         if: ${{ failure() }}
