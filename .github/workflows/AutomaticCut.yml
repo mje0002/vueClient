@@ -25,15 +25,6 @@ jobs:
           ref: master ## Need to change this to your base branch
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - run: echo "The ${{ github.repository }} / ${{github.ref}} repository has been cloned to the runner."
-      
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-        
-      - run: echo "The branch ${{steps.extract_branch.outputs.branch}}"
       
       - name: Merge master to staging
         uses: everlytic/branch-merge@1.1.0
@@ -45,3 +36,48 @@ jobs:
       - name: Merge has Failed
         if: ${{ failure() }}
         run: echo "Send message to Slack about merge failure - needs manual intervention"
+        
+      - name: Checkout staging
+        uses: actions/checkout@v2
+        with: 
+          ref: staging ## Need to change this to your base branch
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Build Change Log
+        shell: bash
+        run: |
+          CHANGE_LOG=$(git cherry -v origin/release | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')
+          echo "CHANGE_LOG<<EOF" >> $GITHUB_ENV
+          echo "$CHANGE_LOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        id: change_log
+        
+      - uses: actions/checkout@v2
+        with:
+          ref: release
+          
+      - name: Reset staging branch
+        run: |
+          git fetch origin staging:staging
+          git reset --hard staging
+          
+      - run: echo "$(git cherry -v origin/release | awk '$0=$2' | git log --no-walk --stdin --pretty='%Cred%h%Creset %s (%ci) %cn:<%an>')"
+        
+      
+            
+      #- name: Failed to create Pull Request
+      #  if: ${{ failure() }}
+      #  run: echo "Send message to Slack about Pull Request"
+      #- name: Created Pull Request
+      #  if: ${{ success() }}
+      #  run: echo "Send message to Slack about Pull Request ${{ steps.autopr.outputs.pull-request-number }} - ${{ steps.autopr.outputs.pull-request-url }}"
+        
+      #- name: Generate Jira Ticket for Pull Request to release
+      #  run: echo "Generating JIRA ticket for PR \n ${{env.PR_DIFF}}"
+      #- name: Created Jira Ticket
+      #  if: ${{ success() }}
+      #  run: echo "Send message to Slack about Pull Request and Jira Ticket"
+      #- name: Failed to create Jira Ticket
+      #  if: ${{ failure() }}
+      #  run: echo "Send message to Slack about Pull Request"
