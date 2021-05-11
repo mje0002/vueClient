@@ -55,7 +55,9 @@ jobs:
         
       - uses: actions/checkout@v2
         with:
-          ref: release
+          ref: staging ## Need to change this to your base branch
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Create Pull Request
         id: autopr
@@ -74,7 +76,7 @@ jobs:
             delete-branch: true
             labels: automated pr
             reviewers: mje0002
-            base: staging
+            base: release
             
       #- name: Failed to create Pull Request
       #  if: ${{ failure() }}
