@@ -55,9 +55,14 @@ jobs:
         
       - uses: actions/checkout@v2
         with:
-          ref: staging ## Need to change this to your base branch
+          ref: release ## Need to change this to your base branch
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Reset main branch
+        run: |
+          git fetch origin staging:staging
+          git reset --hard staging
       
       - name: Create Pull Request
         id: autopr
@@ -76,7 +81,6 @@ jobs:
             delete-branch: true
             labels: automated pr
             reviewers: mje0002
-            base: release
             
       #- name: Failed to create Pull Request
       #  if: ${{ failure() }}
