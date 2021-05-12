@@ -9,27 +9,27 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   
-    #inputs:
-    #  default_branch:
-    #    description: 'The base branch like development'
-    #    required: true
-    #    default: 'development'
-    #  staging_branch:
-    #    description: 'The base branch like staging/uat'
-    #    required: true
-    #    default: 'staging'
-    #  release_branch:
-    #    description: 'The base branch like release/production'
-    #    required: true
-    #    default: 'release'
-    #  pull_request_reviewers:
-    #    description: 'this can a comma seperated list and/or github team'
-    #    required: true
-    #    default: 'mje0002'
-    #  pull_request_labels:
-    #    description: 'A comma seperated list of labels'
-    #    required: true
-    #    default: 'automated-pr'
+    inputs:
+      default_branch:
+        description: 'The base branch like development'
+        required: true
+        default: 'development'
+      staging_branch:
+        description: 'The base branch like staging/uat'
+        required: true
+        default: 'staging'
+      release_branch:
+        description: 'The base branch like release/production'
+        required: true
+        default: 'release'
+      pull_request_reviewers:
+        description: 'this can a comma seperated list and/or github team'
+        required: true
+        default: 'mje0002'
+      pull_request_labels:
+        description: 'A comma seperated list of labels'
+        required: true
+        default: 'automated-pr'
         
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -46,6 +46,15 @@ jobs:
       PULL_REQUEST_LABELS: 'automated-pr'
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Set Env if workflow_dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "DEFAULT_BRANCH=${{github.event.inputs.default_branch}}" >> $GITHUB_ENV
+          echo "STAGING_BRANCH=${{github.event.inputs.staging_branch}}" >> $GITHUB_ENV
+          echo "RELEASE_BRANCH=${{github.event.inputs.release_branch}}" >> $GITHUB_ENV
+          echo "PULL_REQUEST_REVIEWERS=${{github.event.inputs.pull_request_reviewers}}" >> $GITHUB_ENV
+          echo "PULL_REQUEST_LABELS=${{github.event.inputs.pull_request_labels}}" >> $GITHUB_ENV
+          
       - run: echo "CURRENT_DATE=$(date "+%Y.%m.%d-%H.%M.%S")" >> $GITHUB_ENV
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out repository code
