@@ -1,7 +1,7 @@
 
 <template>
     <div class="app">
-		<sui-menu 
+		<!-- <sui-menu 
 			:inverted="true"
 			:visible="isVisible"
 			fixed
@@ -21,20 +21,22 @@
 		</sui-menu>
 		<sui-container class="app-container" fluid>
 			<router-view></router-view>
-		</sui-container>
+		</sui-container> -->
+
+		Hello World matt! Vishal
     </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
 
-@Component
-export default class App extends Vue {
-	isVisible = true
-}
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  name: 'AppStart',
+});
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="scss" >
 .app-container{
   min-width: 550px;
   height: calc(100vh - 70px);
