@@ -1,4 +1,5 @@
 var path = require('path')
+const TsconfigPathsPlugin  = require('tsconfig-paths-webpack-plugin')
 
 module.exports = {
 	cache: true,
@@ -12,9 +13,8 @@ module.exports = {
 	module: {
         rules: [
             { 
-				test: /\.ts(x?)$/,
-				loader: 'ts-loader',
-				exclude: /node_modules/,
+				test: /\.tsx?$/, 
+				loader: "ts-loader"
 			},
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
@@ -28,7 +28,10 @@ module.exports = {
 	plugins: [
 	],
 	resolve: {
-			// Add '.ts' and '.tsx' as resolvable extensions.
-			extensions: [".ts", ".js", ".json"]
+		// Add '.ts' and '.tsx' as resolvable extensions.
+		extensions: [".ts", ".js", ".json"],
+		plugins: [
+			new TsconfigPathsPlugin(),
+		],
 	}
 }

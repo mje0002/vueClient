@@ -6,8 +6,9 @@ const loggerNameFormat = (info: any, data: {name: string}) => {
 	return info
 }
 
-const transports = []
-transports.push(new winston.transports.Console())
+const consoleLogger = new winston.transports.Console();
+const transports: any[] = []
+transports.push(consoleLogger)
 
 const logger = winston.createLogger({
 	format: winston.format.combine(

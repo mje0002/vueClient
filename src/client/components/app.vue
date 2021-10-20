@@ -1,63 +1,50 @@
 
 <template>
-    <div class="app">
-		<!-- <sui-menu 
-			:inverted="true"
-			:visible="isVisible"
-			fixed
-		>
-		    <sui-menu-item>
-				<sui-image :src="`/public/logo-vue.png`" spaced="right" size="mini" />
-				<strong>
-					Vue Welcome
-					<small>
-					<em>1.0.0</em>
-					</small>
-				</strong>
-			</sui-menu-item>
-			<router-link is="sui-menu-item" to="/"> Intro</router-link>
-			<router-link is="sui-menu-item" to="/ReadMe"> ReadMe</router-link>
-
-		</sui-menu>
-		<sui-container class="app-container" fluid>
-			<router-view></router-view>
-		</sui-container> -->
-
-		Hello World matt! Vishal
-    </div>
+  <div class="app"> 
+    Hello World matt! The whole team is viewing MOre
+  </div>
 </template>
 
 <script lang="ts">
+	import { defineComponent } from 'vue';
 
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'AppStart',
-});
+	export default defineComponent({
+		name: 'AppStart',
+		data: () => ({
+			count: 0
+		}),
+		watch: {
+			foo: function (val, oldVal) {
+				console.log('new: %s, old: %s', val, oldVal)
+			}
+		}
+	});
 </script>
 
-<style scoped lang="scss" >
-.app-container{
-  min-width: 550px;
-  height: calc(100vh - 70px);
-  margin-top: 70px;
-  overflow-x: auto;
-}
-.center {
-    text-align: center;
-}
-.app-logo {
-    height: 80px;
-}
-.app-header {
-    background-color: #222;
-    padding: 20px;
-    color: white;
-}
-.app-intro {
-    font-size: large;
-}
-.app{
-	overflow: hidden;
-}
+<style scoped type="sass">
+	.app-container{
+		min-width: 550px;
+		height: calc(100vh - 70px);
+		margin-top: 70px;
+		overflow-x: auto;
+	}
+	.center {
+		text-align: center;
+	}
+	.app-logo {
+		height: 80px;
+	}
+	.app-header {
+		background-color: #222;
+		padding: 20px;
+		color: white;
+	}
+	.app-intro {
+		font-size: large;
+	}
+	.app{
+		overflow: hidden;
+		height: 100vh;
+		background: lightgray;
+	}
 </style>
