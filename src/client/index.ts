@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-//import store from './store/index'
+import { store } from '@/client/store/store'
 import App from './components/app.vue'
 //import router from './router'
 
@@ -16,5 +16,7 @@ import App from './components/app.vue'
 // 	components: { App }
 // })
 
-createApp(App)
-  .mount("#app");
+const app = createApp(App);
+app.use(store)
+
+app.mount("#app");
